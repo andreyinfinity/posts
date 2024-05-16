@@ -3,13 +3,19 @@ from users.models import User
 
 
 class UserSerializer(serializers.ModelSerializer):
-
+    """Сериализатор модели пользователя"""
     class Meta:
         model = User
-        fields = '__all__'
+        fields = ['id', 'username', 'first_name', 'last_name', 'email', 'phone_number', 'date_of_birth']
+        write_only_fields = ['password']
 
 
-class OtherUserSerializer(serializers.ModelSerializer):
+class UserRegisterSerializer(serializers.ModelSerializer):
+    """Сериализатор для регистрации нового пользователя"""
     class Meta:
         model = User
-        exclude = ['password', 'last_name']
+        fields = ['username', 'password']
+        write_only_fields = ['password']
+
+    def to_representation(self, instance):
+        return {'username': instance.username}

@@ -2,13 +2,13 @@ from rest_framework import generics
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from users.models import User
 from users.permissions import IsAdmin, IsSelf
-from users.serializers import UserSerializer
+from users.serializers import UserSerializer, UserRegisterSerializer
 
 
 class UserRegister(generics.CreateAPIView):
     """Создание нового пользователя"""
     permission_classes = [AllowAny]
-    serializer_class = UserSerializer
+    serializer_class = UserRegisterSerializer
 
     def perform_create(self, serializer):
         """Шифрование пароля перед записью в БД"""
@@ -19,21 +19,21 @@ class UserRegister(generics.CreateAPIView):
 
 class UserRetrieve(generics.RetrieveAPIView):
     """Отображение пользователя"""
-    permission_classes = [IsAuthenticated, IsAdmin]
+    permission_classes = [IsAuthenticated]
     serializer_class = UserSerializer
     queryset = User.objects.all()
 
 
 class UserList(generics.ListAPIView):
     """Отображение списка пользователей"""
-    permission_classes = [IsAuthenticated, IsAdmin]
+    permission_classes = [IsAuthenticated]
     serializer_class = UserSerializer
     queryset = User.objects.all()
 
 
 class UserUpdate(generics.UpdateAPIView):
     """Редактирование пользователя"""
-    permission_classes = [IsSelf, IsAdmin]
+    permission_classes = [IsSelf | IsAdmin]
     serializer_class = UserSerializer
     queryset = User.objects.all()
 
